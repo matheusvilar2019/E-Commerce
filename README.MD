@@ -1,7 +1,7 @@
 # E-COMMERCE
-The objective is developer a web api with user authentication, cart with added products ,payment integration and admin panel.
+The objective is developer a web api with user authentication, cart with added products, payment integration and admin panel.
 
-## Models, such:
+## Models:
 - User
 - Product
 - Cart
