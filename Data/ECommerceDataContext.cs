@@ -9,6 +9,7 @@ public class ECommerceDataContext : DbContext
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles{ get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
@@ -21,5 +22,6 @@ public class ECommerceDataContext : DbContext
         modelBuilder.ApplyConfiguration(new PaymentMap());
         modelBuilder.ApplyConfiguration(new ProductMap());
         modelBuilder.ApplyConfiguration(new UserMap());
+        modelBuilder.ApplyConfiguration(new RoleMap());
     }
 }
