@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs/E-Commerce/FileContentIndex
+/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/bin/Debug/net8.0/SecureIdentity.dll
+/obj/*

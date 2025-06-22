@@ -7,6 +7,18 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Definindo a política CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // origem do Angular
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
 builder.Services.AddAuthentication(x =>
 {
@@ -35,6 +47,9 @@ builder.Services.AddDbContext<ECommerceDataContext>();
 builder.Services.AddTransient<TokenService>();
 
 var app = builder.Build();
+
+// Middleware CORS
+app.UseCors("AllowAngularDev");
 
 app.UseAuthentication();
 app.UseAuthorization();
