@@ -4,6 +4,7 @@ using E_Commerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(ECommerceDataContext))]
-    partial class ECommerceDataContextModelSnapshot : ModelSnapshot
+    [Migration("20250702023407_CartClosed")]
+    partial class CartClosed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace E_Commerce.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CartProduct", b =>
+                {
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CartProduct");
+                });
 
             modelBuilder.Entity("E_Commerce.Model.Cart", b =>
                 {
@@ -42,32 +60,6 @@ namespace E_Commerce.Migrations
                         .IsUnique();
 
                     b.ToTable("Cart", (string)null);
-                });
-
-            modelBuilder.Entity("E_Commerce.Model.CartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CartId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CartItem");
                 });
 
             modelBuilder.Entity("E_Commerce.Model.Payment", b =>
@@ -216,6 +208,23 @@ namespace E_Commerce.Migrations
                     b.ToTable("UserRole");
                 });
 
+            modelBuilder.Entity("CartProduct", b =>
+                {
+                    b.HasOne("E_Commerce.Model.Product", null)
+                        .WithMany()
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_CartProduct_CartId");
+
+                    b.HasOne("E_Commerce.Model.Cart", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_CartProduct_ProductId");
+                });
+
             modelBuilder.Entity("E_Commerce.Model.Cart", b =>
                 {
                     b.HasOne("E_Commerce.Model.User", "User")
@@ -226,27 +235,6 @@ namespace E_Commerce.Migrations
                         .HasConstraintName("FK_User_Cart");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("E_Commerce.Model.CartItem", b =>
-                {
-                    b.HasOne("E_Commerce.Model.Cart", "Cart")
-                        .WithMany("Items")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Cart_CartItems");
-
-                    b.HasOne("E_Commerce.Model.Product", "Product")
-                        .WithMany("CartItems")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Product_CartItems");
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("E_Commerce.Model.Payment", b =>
@@ -276,16 +264,6 @@ namespace E_Commerce.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_UserRole_UserId");
-                });
-
-            modelBuilder.Entity("E_Commerce.Model.Cart", b =>
-                {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("E_Commerce.Model.Product", b =>
-                {
-                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("E_Commerce.Model.User", b =>

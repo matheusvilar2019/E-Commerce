@@ -41,6 +41,14 @@ namespace E_Commerce.Data.Mappings
             // Index
             builder.HasIndex(x => x.Slug, "IX_Product_Slug")
                 .IsUnique();
+
+            //Relationships
+            builder
+                .HasMany(x => x.CartItems)
+                .WithOne(x => x.Product)
+                .HasConstraintName("FK_Product_CartItems")
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

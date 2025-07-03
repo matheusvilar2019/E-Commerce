@@ -20,9 +20,9 @@ namespace E_Commerce.Controller
         }
 
         [HttpPost("v1/accounts/login")]
-        public async Task<IActionResult> Login([FromBody] LoginViewModel model, [FromServices] ECommerceDataContext context, [FromServices] TokenService tokenService) 
+        public async Task<IActionResult> Login([FromBody] LoginDTO model, [FromServices] ECommerceDataContext context, [FromServices] TokenService tokenService) 
         {
-            if (!ModelState.IsValid) return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+            if (!ModelState.IsValid) return BadRequest(new ResultDTO<string>(ModelState.GetErrors()));
 
             var user = await context
                 .Users
@@ -31,26 +31,26 @@ namespace E_Commerce.Controller
                 .FirstOrDefaultAsync(x => x.Email == model.Email);
 
             if (user == null) 
-                return StatusCode(401, new ResultViewModel<string>("Usuário ou senha inválidos"));
+                return StatusCode(401, new ResultDTO<string>("Usuário ou senha inválidos"));
 
             if (!PasswordHasher.Verify(user.PasswordHash, model.Password))
-                return StatusCode(401, new ResultViewModel<string>("Usuário ou senha inválidos"));
+                return StatusCode(401, new ResultDTO<string>("Usuário ou senha inválidos"));
 
             try
             {
                 var token = tokenService.GenerateToken(user);
-                return Ok(new ResultViewModel<string>(token, null));
+                return Ok(new ResultDTO<string>(token, null));
             }
             catch
             {
-                return StatusCode(500, new ResultViewModel<string>("ACR-101 - Falha interna no servidor"));
+                return StatusCode(500, new ResultDTO<string>("ACR-101 - Falha interna no servidor"));
             }
         }
 
         [HttpPost("v1/accounts")]
-        public async Task<IActionResult> Post([FromBody] RegisterViewModel model, [FromServices] ECommerceDataContext context)
+        public async Task<IActionResult> Post([FromBody] RegisterDTO model, [FromServices] ECommerceDataContext context)
         {
-            if (!ModelState.IsValid) return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+            if (!ModelState.IsValid) return BadRequest(new ResultDTO<string>(ModelState.GetErrors()));
 
             var user = new User
             {
@@ -68,18 +68,18 @@ namespace E_Commerce.Controller
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
 
-                return Ok(new ResultViewModel<dynamic>(new
+                return Ok(new ResultDTO<dynamic>(new
                 {
                     user = user.Email, user.PasswordHash
                 }));
             }
             catch (DbUpdateException)
             {
-                return StatusCode(400, new ResultViewModel<string>("ACR-101 - E-mail already exists"));
+                return StatusCode(400, new ResultDTO<string>("ACR-101 - E-mail already exists"));
             }
             catch(Exception)
             {
-                return StatusCode(500, new ResultViewModel<string>("ACR-102 - Internal server error"));
+                return StatusCode(500, new ResultDTO<string>("ACR-102 - Internal server error"));
             }
         }
     }

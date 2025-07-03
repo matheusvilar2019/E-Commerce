@@ -2,7 +2,7 @@
 
 namespace E_Commerce.ViewModels
 {
-    public class LoginViewModel
+    public class LoginDTO
     {
         [Required(ErrorMessage = "Informe o E-mail")]
         [EmailAddress(ErrorMessage = "E-mail inválido")]
