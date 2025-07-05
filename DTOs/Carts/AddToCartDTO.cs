@@ -2,7 +2,8 @@
 {
     public class AddToCartDTO
     {
-        public int UserId { get; set; }
-        public List<GetCartItemDTO> Items { get; set; }
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
+        public GetCartProductDTO Product { get; set; }
     }
 }

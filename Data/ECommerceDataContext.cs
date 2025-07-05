@@ -6,6 +6,7 @@ namespace E_Commerce.Data;
 public class ECommerceDataContext : DbContext
 {
     public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItem { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<User> Users { get; set; }

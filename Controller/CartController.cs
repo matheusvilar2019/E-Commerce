@@ -1,7 +1,9 @@
 ﻿using E_Commerce.Data;
+using E_Commerce.DTOs.Carts;
 using E_Commerce.Model;
 using E_Commerce.ViewModels;
 using E_Commerce.ViewModels.Carts;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static System.Net.Mime.MediaTypeNames;
@@ -39,7 +41,7 @@ namespace E_Commerce.Controller
             }
         }
 
-        [HttpGet("v1/carts/user/{userId:int}")]
+        [HttpGet("v1/carts/items/user/{userId:int}")]
         public async Task<IActionResult> GetCartByUserIdAsync([FromServices] ECommerceDataContext context, [FromRoute] int userId)
         {
             try
@@ -56,6 +58,7 @@ namespace E_Commerce.Controller
                     UserId = cart.UserId,
                     Items = cart.Items.Select(item => new GetCartItemDTO
                     {
+                        Id = item.Id,
                         Quantity = item.Quantity,
                         Product = new GetCartProductDTO
                         {
@@ -77,22 +80,22 @@ namespace E_Commerce.Controller
             }
         }
 
-        [HttpPost("v1/carts")]
-        public async Task<IActionResult> PostCartAsync([FromBody] AddToCartDTO request, [FromServices] ECommerceDataContext context)
+        [HttpPost("v1/carts/items/user/{userId:int}")]
+        public async Task<IActionResult> PostCartItemsAsync([FromRoute] int userId, [FromBody] List<AddToCartDTO> requestItems, [FromServices] ECommerceDataContext context)
         {
             try
             {
                 var cart = await context.Carts
                     .Include(c => c.Items)
-                    .FirstOrDefaultAsync(c => c.UserId == request.UserId);
+                    .FirstOrDefaultAsync(c => c.UserId == userId);
 
                 if (cart == null)
                 {
-                    cart = new Cart { UserId = request.UserId };
+                    cart = new Cart { UserId = userId };
                     await context.Carts.AddAsync(cart);
                 }
 
-                foreach (var item in request.Items)
+                foreach (var item in requestItems)
                 {
                     var product = await context.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId);
                     if (product == null) continue;
@@ -113,7 +116,7 @@ namespace E_Commerce.Controller
                 }
 
                 await context.SaveChangesAsync();
-                return Ok(new ResultDTO<AddToCartDTO>(request));
+                return Ok(new ResultDTO<List<AddToCartDTO>>(requestItems));
             }
             catch (Exception ex)
             {
@@ -163,6 +166,28 @@ namespace E_Commerce.Controller
                 return StatusCode(500, new ResultDTO<Cart>("CRT-106 - Internal server failure"));
             }
 
+        }
+
+        [HttpDelete("v1/carts/items/{id:int}")]
+        public async Task<IActionResult> DeleteCartItemAsync([FromRoute] int id, [FromServices] ECommerceDataContext context)
+        {
+            try
+            {
+                var cartItem = await context
+                    .CartItem
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                if (cartItem == null) return NotFound();
+
+                context.CartItem.Remove(cartItem);
+                await context.SaveChangesAsync();
+
+                return StatusCode(500, new ResultDTO<int>(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultDTO<Cart>("CRT-106 - Internal server failure"));
+            }
         }
     }
 }
