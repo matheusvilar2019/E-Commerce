@@ -2,7 +2,7 @@
 
 namespace E_Commerce.ViewModels
 {
-    public class RegisterViewModel
+    public class RegisterDTO
     {
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }

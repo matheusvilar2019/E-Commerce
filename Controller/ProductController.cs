@@ -18,11 +18,11 @@ namespace E_Commerce.Controller
             try
             {
                 var products = await context.Products.ToListAsync();
-                return Ok(new ResultViewModel<List<Product>>(products));
+                return Ok(new ResultDTO<List<Product>>(products));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ResultViewModel<List<Product>>("PDT-101 - Internal server failure"));
+                return StatusCode(500, new ResultDTO<List<Product>>("PDT-101 - Internal server failure"));
             }
         }
 
@@ -37,19 +37,19 @@ namespace E_Commerce.Controller
 
                 if (product == null) return NotFound();
 
-                return Ok(new ResultViewModel<Product>(product));
+                return Ok(new ResultDTO<Product>(product));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ResultViewModel<Product>("PDT-201 - Internal server failure"));
+                return StatusCode(500, new ResultDTO<Product>("PDT-201 - Internal server failure"));
             }
             
         }
 
         [HttpPost("v1/products")]
-        public async Task<IActionResult> PostAsync([FromBody] EditorProductViewModel model, [FromServices] ECommerceDataContext context)
+        public async Task<IActionResult> PostAsync([FromBody] EditorProductDTO model, [FromServices] ECommerceDataContext context)
         {
-            if (!ModelState.IsValid) return BadRequest(new ResultViewModel<Product>(ModelState.GetErrors()));
+            if (!ModelState.IsValid) return BadRequest(new ResultDTO<Product>(ModelState.GetErrors()));
             try
             {
                 Product product = new Product
@@ -64,20 +64,20 @@ namespace E_Commerce.Controller
                 await context.Products.AddAsync(product);
                 await context.SaveChangesAsync();
 
-                return Created($"v1/products/{product.Id}", new ResultViewModel<Product>(product));
+                return Created($"v1/products/{product.Id}", new ResultDTO<Product>(product));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, new ResultViewModel<Product>("PDT-301 - Could not include product"));
+                return StatusCode(500, new ResultDTO<Product>("PDT-301 - Could not include product"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ResultViewModel<Product>("PDT-302 - Internal server failure"));
+                return StatusCode(500, new ResultDTO<Product>("PDT-302 - Internal server failure"));
             }
         }
 
         [HttpPut("v1/products/{id:int}")]
-        public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] EditorProductViewModel model, [FromServices] ECommerceDataContext context)
+        public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] EditorProductDTO model, [FromServices] ECommerceDataContext context)
         {
             try
             {
@@ -96,15 +96,15 @@ namespace E_Commerce.Controller
                 context.Products.Update(product);
                 await context.SaveChangesAsync();
 
-                return Ok(new ResultViewModel<Product>(product));
+                return Ok(new ResultDTO<Product>(product));
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, new ResultViewModel<Product>("PDT-401 - Could not update product"));
+                return StatusCode(500, new ResultDTO<Product>("PDT-401 - Could not update product"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ResultViewModel<Product>("PDT-405 - Internal server failure"));
+                return StatusCode(500, new ResultDTO<Product>("PDT-405 - Internal server failure"));
             }
         }
 
@@ -122,15 +122,15 @@ namespace E_Commerce.Controller
                 context.Products.Remove(product);
                 await context.SaveChangesAsync();
 
-                return Ok(new ResultViewModel<Product>(product));
+                return Ok(new ResultDTO<Product>(product));
             }         
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, new ResultViewModel<Product>("PDT-501 - Could not delete product"));
+                return StatusCode(500, new ResultDTO<Product>("PDT-501 - Could not delete product"));
             }
             catch (Exception e)
             {
-                return StatusCode(500, new ResultViewModel<Product>("PDT-502 - Internal server failure"));
+                return StatusCode(500, new ResultDTO<Product>("PDT-502 - Internal server failure"));
             }
         }
     }

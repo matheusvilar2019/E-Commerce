@@ -2,7 +2,7 @@
 
 namespace E_Commerce.ViewModels.Products
 {
-    public class EditorProductViewModel
+    public class EditorProductDTO
     {
         [Required(ErrorMessage = "Name is required")]
         [StringLength(80, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 80 characters")]

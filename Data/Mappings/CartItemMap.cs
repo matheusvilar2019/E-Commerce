@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace E_Commerce.Data.Mappings
 {
-    public class CartMap : IEntityTypeConfiguration<Cart>
+    public class CartItemMap : IEntityTypeConfiguration<CartItem>
     {
-        public void Configure(EntityTypeBuilder<Cart> builder)
+        public void Configure(EntityTypeBuilder<CartItem> builder)
         {
             // Table
-            builder.ToTable("Cart");
+            builder.ToTable("CartItem");
 
             // Primary Key
             builder.HasKey(x => x.Id);
@@ -18,13 +18,6 @@ namespace E_Commerce.Data.Mappings
             builder.Property(x => x.Id)
                 .ValueGeneratedOnAdd()
                 .UseIdentityColumn();
-
-            // Relationships
-            builder
-                .HasMany(x => x.Items)
-                .WithOne(x => x.Cart)
-                .HasConstraintName("FK_Cart_CartItems")
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -1,23 +1,23 @@
 ﻿namespace E_Commerce.ViewModels;
-public class ResultViewModel<T>
+public class ResultDTO<T>
 {
-    public ResultViewModel(T data, List<string> errors)
+    public ResultDTO(T data, List<string> errors)
     {
         Data = data;
         Errors = errors;
     }
 
-    public ResultViewModel(T data)
+    public ResultDTO(T data)
     {
         Data = data;
     }
 
-    public ResultViewModel(List<string> errors)
+    public ResultDTO(List<string> errors)
     {
         Errors = errors;
     }
 
-    public ResultViewModel(string error)
+    public ResultDTO(string error)
     {
         Errors.Add(error);
     }
