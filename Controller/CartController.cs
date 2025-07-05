@@ -1,8 +1,8 @@
 ﻿using E_Commerce.Data;
-using E_Commerce.DTOs.Carts;
 using E_Commerce.Model;
 using E_Commerce.ViewModels;
 using E_Commerce.ViewModels.Carts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +13,7 @@ namespace E_Commerce.Controller
     [ApiController]
     public class CartController : ControllerBase
     {
+        [Authorize(Roles = "Administrator")]
         [HttpGet("v1/carts")]
         public async Task<IActionResult> GetCartAsync([FromServices] ECommerceDataContext context)
         {
@@ -27,6 +28,7 @@ namespace E_Commerce.Controller
             }
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpGet("v1/carts/{id:int}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id, [FromServices] ECommerceDataContext context)
         {
@@ -41,11 +43,15 @@ namespace E_Commerce.Controller
             }
         }
 
+        [Authorize]
         [HttpGet("v1/carts/items/user/{userId:int}")]
         public async Task<IActionResult> GetCartByUserIdAsync([FromServices] ECommerceDataContext context, [FromRoute] int userId)
         {
             try
             {
+                var userIdFromToken = int.Parse(User.Identity.Name);
+                if (userId != userIdFromToken) return Forbid("CRT-304 - Você não tem permissão para acessar este carrinho");
+
                 var cart = await context
                     .Carts
                     .Include(c => c.Items)
@@ -80,11 +86,15 @@ namespace E_Commerce.Controller
             }
         }
 
+        [Authorize]
         [HttpPost("v1/carts/items/user/{userId:int}")]
         public async Task<IActionResult> PostCartItemsAsync([FromRoute] int userId, [FromBody] List<AddToCartDTO> requestItems, [FromServices] ECommerceDataContext context)
         {
             try
             {
+                var userIdFromToken = int.Parse(User.Identity.Name);
+                if (userId != userIdFromToken) return Forbid("CRT-404 - Você não tem permissão para alterar este carrinho");
+
                 var cart = await context.Carts
                     .Include(c => c.Items)
                     .FirstOrDefaultAsync(c => c.UserId == userId);
@@ -124,11 +134,15 @@ namespace E_Commerce.Controller
             }
         }
 
+        [Authorize]
         [HttpPatch("v1/carts/{userId:int}")]
         public async Task<IActionResult> PatchByIdAsync([FromRoute] int userId, [FromBody] bool closed, [FromServices] ECommerceDataContext context)
         {
             try
             {
+                var userIdFromToken = int.Parse(User.Identity.Name);
+                if (userId != userIdFromToken) return Forbid("CRT-404 - Você não tem permissão para alterar este carrinho");
+
                 var cart = await context.Carts.FirstOrDefaultAsync(x => x.UserId == userId);
 
                 if (cart == null) return NotFound();
@@ -145,6 +159,7 @@ namespace E_Commerce.Controller
             }
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("v1/carts/{id:int}")]
         public async Task<IActionResult> DeleteCartAsync([FromRoute] int id, [FromServices] ECommerceDataContext context)
         {
@@ -168,11 +183,15 @@ namespace E_Commerce.Controller
 
         }
 
-        [HttpDelete("v1/carts/items/{id:int}")]
-        public async Task<IActionResult> DeleteCartItemAsync([FromRoute] int id, [FromServices] ECommerceDataContext context)
+        [Authorize]
+        [HttpDelete("v1/carts/user/{userId:int}/items/{id:int}")]
+        public async Task<IActionResult> DeleteCartItemAsync([FromRoute] int id, [FromRoute] int userId, [FromServices] ECommerceDataContext context)
         {
             try
             {
+                var userIdFromToken = int.Parse(User.Identity.Name);
+                if (userId != userIdFromToken) return Forbid("CRT-407 - Você não tem permissão para alterar este carrinho");
+
                 var cartItem = await context
                     .CartItem
                     .FirstOrDefaultAsync(x => x.Id == id);
@@ -186,7 +205,7 @@ namespace E_Commerce.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ResultDTO<Cart>("CRT-106 - Internal server failure"));
+                return StatusCode(500, new ResultDTO<Cart>("CRT-107 - Internal server failure"));
             }
         }
     }
