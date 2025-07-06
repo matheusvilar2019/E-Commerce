@@ -4,6 +4,7 @@ using E_Commerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(ECommerceDataContext))]
-    partial class ECommerceDataContextModelSnapshot : ModelSnapshot
+    [Migration("20250706181907_UserAddressEntity")]
+    partial class UserAddressEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,41 +39,29 @@ namespace E_Commerce.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("City");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("District")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("District");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("Number");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("State");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("Street");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<int>("ZipCode")
-                        .HasMaxLength(8)
-                        .HasColumnType("INT")
-                        .HasColumnName("ZipCode");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

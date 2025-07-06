@@ -38,8 +38,6 @@ namespace E_Commerce.Data.Mappings
                 .HasColumnType("VARCHAR")
                 .HasMaxLength(255);
             builder.Property(x => x.BirthDate);
-            builder.Property(x => x.CEP);
-            builder.Property(x => x.Address);
 
             // Index
             builder
@@ -47,6 +45,12 @@ namespace E_Commerce.Data.Mappings
                 .IsUnique(); // Email Validation: Unique email
 
             // Relationships
+            builder
+                .HasOne(x => x.Address)
+                .WithOne(x => x.User)
+                .HasConstraintName("FK_User_Address")
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder
                 .HasOne(x => x.Cart)
                 .WithOne(x => x.User)

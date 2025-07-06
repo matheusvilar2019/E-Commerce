@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.IO;
+using System.Reflection.Emit;
+using E_Commerce.DTOs;
 
 namespace E_Commerce.Controller
 {
@@ -59,8 +63,16 @@ namespace E_Commerce.Controller
                 PasswordHash = PasswordHasher.Hash(model.Password),
                 CPF = model.CPF,
                 BirthDate = model.BirthDate,
-                CEP = model.CEP,
-                Address = model.Address
+                Address = new Address 
+                {
+                    ZipCode = model.Address.ZipCode,
+                    Street = model.Address.Street,
+                    Number = model.Address.Number,
+                    AddressLine2 = model.Address.AddressLine2,
+                    District = model.Address.District,
+                    State = model.Address.State,
+                    City = model.Address.City
+                }
             };
 
             try
