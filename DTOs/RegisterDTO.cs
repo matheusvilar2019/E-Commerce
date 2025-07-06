@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using E_Commerce.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace E_Commerce.ViewModels
 {
@@ -20,10 +21,6 @@ namespace E_Commerce.ViewModels
         [Required(ErrorMessage = "Birthdate is required")]
         public DateTime BirthDate { get; set; }
 
-        [Required(ErrorMessage = "CEP is required")]
-        public int CEP { get; set; }
-
-        [Required(ErrorMessage = "Address is required")]
-        public string Address { get; set; }
+        public AddressDTO Address { get; set; }
     }
 }
