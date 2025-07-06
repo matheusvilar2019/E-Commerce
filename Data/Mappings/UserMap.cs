@@ -50,7 +50,7 @@ namespace E_Commerce.Data.Mappings
                 .WithOne(x => x.User)
                 .HasConstraintName("FK_User_Address")
                 .OnDelete(DeleteBehavior.Cascade);
-
+                
             builder
                 .HasOne(x => x.Cart)
                 .WithOne(x => x.User)
