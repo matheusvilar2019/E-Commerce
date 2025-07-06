@@ -43,7 +43,7 @@ namespace E_Commerce.Controller
             }
             catch
             {
-                return StatusCode(500, new ResultDTO<string>("ACR-101 - Falha interna no servidor"));
+                return StatusCode(500, new ResultDTO<string>("ACC-101 - Falha interna no servidor"));
             }
         }
 
@@ -75,11 +75,29 @@ namespace E_Commerce.Controller
             }
             catch (DbUpdateException)
             {
-                return StatusCode(400, new ResultDTO<string>("ACR-101 - E-mail already exists"));
+                return StatusCode(400, new ResultDTO<string>("ACC-101 - E-mail already exists"));
             }
             catch(Exception)
             {
-                return StatusCode(500, new ResultDTO<string>("ACR-102 - Internal server error"));
+                return StatusCode(500, new ResultDTO<string>("ACC-102 - Internal server error"));
+            }
+        }
+
+        [HttpGet("v1/emailExists/{email}")]
+        public async Task<IActionResult> EmailExistsAsync([FromRoute] string email, [FromServices] ECommerceDataContext context)
+        {
+            try
+            {
+                var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+                if (user == null) return Ok(false);
+
+                bool emailExists = user.Email == email;
+                return Ok(emailExists);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultDTO<string>("ACC-201 - Internal server error"));
             }
         }
     }

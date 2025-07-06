@@ -41,7 +41,12 @@ namespace E_Commerce.Data.Mappings
             builder.Property(x => x.CEP);
             builder.Property(x => x.Address);
 
-            // Relations
+            // Index
+            builder
+                .HasIndex(x => x.Email)
+                .IsUnique(); // Email Validation: Unique email
+
+            // Relationships
             builder
                 .HasOne(x => x.Cart)
                 .WithOne(x => x.User)
