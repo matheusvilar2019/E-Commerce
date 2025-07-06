@@ -12,7 +12,8 @@ namespace E_Commerce.Extensions
         {
             var result = new List<Claim>
             {
-                new(ClaimTypes.Name, user.Id.ToString())
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new("firstName", user.Name.Split(' ')[0])
             };
             result.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Slug)));
             return result;
