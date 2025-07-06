@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace E_Commerce.Controller
@@ -49,7 +50,7 @@ namespace E_Commerce.Controller
         {
             try
             {
-                var userIdFromToken = int.Parse(User.Identity.Name);
+                var userIdFromToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 if (userId != userIdFromToken) return Forbid("CRT-304 - Você não tem permissão para acessar este carrinho");
 
                 var cart = await context
@@ -92,7 +93,7 @@ namespace E_Commerce.Controller
         {
             try
             {
-                var userIdFromToken = int.Parse(User.Identity.Name);
+                var userIdFromToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 if (userId != userIdFromToken) return Forbid("CRT-404 - Você não tem permissão para alterar este carrinho");
 
                 var cart = await context.Carts
@@ -140,7 +141,7 @@ namespace E_Commerce.Controller
         {
             try
             {
-                var userIdFromToken = int.Parse(User.Identity.Name);
+                var userIdFromToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 if (userId != userIdFromToken) return Forbid("CRT-404 - Você não tem permissão para alterar este carrinho");
 
                 var cart = await context.Carts.FirstOrDefaultAsync(x => x.UserId == userId);
@@ -189,7 +190,7 @@ namespace E_Commerce.Controller
         {
             try
             {
-                var userIdFromToken = int.Parse(User.Identity.Name);
+                var userIdFromToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 if (userId != userIdFromToken) return Forbid("CRT-407 - Você não tem permissão para alterar este carrinho");
 
                 var cartItem = await context
