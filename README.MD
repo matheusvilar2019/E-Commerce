@@ -25,3 +25,5 @@ Here is a rough list of requirements for this project:
 - Ability to view and search for products.
 - Ability for users to checkout and pay for products.
 
+## Architecture Diagram
+![E-Commerce API Architecture](/Assets/simple-ecommerce-api-thzqo.png)
