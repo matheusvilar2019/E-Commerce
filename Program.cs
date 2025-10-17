@@ -3,6 +3,7 @@ using E_Commerce.Data;
 using E_Commerce.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,8 +44,20 @@ builder
         options.SuppressModelStateInvalidFilter = true;
     });
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddUserSecrets<Program>(optional: true)
+    .AddEnvironmentVariables();
+
+// Stripe Payment Configuration
+builder.Services.Configure<StripeSettings>(
+    builder.Configuration.GetSection("Stripe"));
+
+var stripeSettings = builder.Configuration.GetSection("Stripe");
+StripeConfiguration.ApiKey = stripeSettings["SecretKey"];
+
 builder.Services.AddDbContext<ECommerceDataContext>();
-builder.Services.AddTransient<TokenService>();
+builder.Services.AddTransient<ECommerceTokenService>();
 
 var app = builder.Build();
 
@@ -59,3 +72,9 @@ app.MapControllers();
 app.MapGet("/", () => "Hello World!");
 
 app.Run();
+
+public class StripeSettings
+{
+    public string SecretKey { get; set; }
+    public string PublishableKey { get; set; }
+}
