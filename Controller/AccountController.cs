@@ -17,14 +17,14 @@ namespace E_Commerce.Controller
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly TokenService _tokenService;
-        public AccountController(TokenService tokenService)
+        private readonly ECommerceTokenService _tokenService;
+        public AccountController(ECommerceTokenService tokenService)
         {
             _tokenService = tokenService;
         }
 
         [HttpPost("v1/accounts/login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO model, [FromServices] ECommerceDataContext context, [FromServices] TokenService tokenService) 
+        public async Task<IActionResult> Login([FromBody] LoginDTO model, [FromServices] ECommerceDataContext context, [FromServices] ECommerceTokenService tokenService) 
         {
             if (!ModelState.IsValid) return BadRequest(new ResultDTO<string>(ModelState.GetErrors()));
 

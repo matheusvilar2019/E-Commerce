@@ -7,7 +7,7 @@ using System.Text;
 
 namespace E_Commerce.Services
 {
-    public class TokenService
+    public class ECommerceTokenService
     {
         public string GenerateToken(User user)
         {

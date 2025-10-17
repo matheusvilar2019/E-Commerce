@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>E_Commerce</RootNamespace>
+    <UserSecretsId>5e5db18b-af30-46a7-808f-7191d1964683</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +20,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
     <PackageReference Include="SecureIdentity" Version="1.0.4" />
+    <PackageReference Include="Stripe.net" Version="49.0.0" />
   </ItemGroup>
 
   <ItemGroup>
