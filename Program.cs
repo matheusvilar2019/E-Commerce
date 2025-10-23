@@ -2,6 +2,7 @@ using E_Commerce;
 using E_Commerce.Data;
 using E_Commerce.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
 using System.Text;
@@ -57,6 +58,7 @@ var stripeSettings = builder.Configuration.GetSection("Stripe");
 StripeConfiguration.ApiKey = stripeSettings["SecretKey"];
 
 builder.Services.AddDbContext<ECommerceDataContext>();
+builder.Services.AddScoped<PaymentService>();
 builder.Services.AddTransient<ECommerceTokenService>();
 
 var app = builder.Build();

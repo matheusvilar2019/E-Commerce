@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Model;
+using E_Commerce.Services;
 using E_Commerce.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,23 +12,20 @@ namespace E_Commerce.Controller
     [Route("v1/[controller]")]
     public class PaymentController : ControllerBase
     {
+        private PaymentService _paymentService;
+
+        public PaymentController(PaymentService paymentService)
+        {
+            _paymentService = paymentService;
+        }
+
         [HttpPost("create-checkout-session/{userId:int}")]
         public async Task<IActionResult> CreateCheckoutSession([FromRoute] int userId, [FromServices] ECommerceDataContext context)
         {
             try
             {
-                var cart = await context
-                    .Carts
-                    .FirstOrDefaultAsync(c => c.UserId == userId && !c.Closed);
-
-                decimal subTotalValue = await context.Carts
-                .Where(c => c.UserId == userId)
-                .SelectMany(c => c.Items)
-                .SumAsync(i => i.Product.Price * i.Quantity);
-
-                decimal taxEstimate = subTotalValue / 10; // 10%
-                decimal shippingEstimate = subTotalValue / 50; // 20%
-                long totalValue = Convert.ToInt64((subTotalValue + taxEstimate + shippingEstimate) * 100);
+                var cart = await _paymentService.Cart(userId);
+                long totalValue = await _paymentService.TotalValue(userId);
 
                 if (cart == null) return NotFound();
 
