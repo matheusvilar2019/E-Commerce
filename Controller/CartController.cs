@@ -57,7 +57,9 @@ namespace E_Commerce.Controller
                     .Carts
                     .Include(c => c.Items)
                         .ThenInclude(i => i.Product)
-                    .FirstOrDefaultAsync(c => c.UserId == userId);
+                    .FirstOrDefaultAsync(c => c.UserId == userId && !c.Closed);
+
+                if (cart == null) return NotFound();
 
                 var cartDTO = new GetCartDTO
                 {
